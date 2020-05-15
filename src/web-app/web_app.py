@@ -5,6 +5,13 @@ from time import time,sleep
 
 app = Flask(__name__)
 
+class DataStore():
+    lower_bound = 1
+    upper_bound = 10
+    number = randint(lower_bound,upper_bound)
+
+data = DataStore()
+
 @app.route("/")
 def splash():
     return render_template('splash.html')
@@ -12,20 +19,24 @@ def splash():
 @app.route("/playing", methods=['GET','POST'])
 def inprogress():
 
-    #initialise number, lower and upper bounds here
-    number =
-    lower_bound =
-    upper_bound = 
-
     default_value = '0'
     try:
         current_guess = int(request.form.get('text',default_value))
-        # inplement your checking code here.
+        print(data.number)
+
+        if current_guess == 0:
+            guess_message = "You haven't guessed yet. Put something in the box!"
+        elif current_guess == data.number:
+            guess_message = "Well done! You guessed correctly. The number I was thinking of was " + str(data.number) + "."
+        elif current_guess < data.number:
+            guess_message = "Too low! Try again and guess a higher number!"
+        else:
+            guess_message = "Too high! Try again and guess a lower number!"
 
     except:
-        guess_message = "Please enter a whole number between " + str(lower_bound) + " and " + str(upper_bound) + "."
+        guess_message = "Please enter a whole number between " + str(data.lower_bound) + " and " + str(data.upper_bound) + "."
 
-    return render_template('playing.html',guess_message=guess_message,upper_bound=upper_bound,lower_bound=lower_bound)
+    return render_template('playing.html',guess_message=guess_message,upper_bound=data.upper_bound,lower_bound=data.lower_bound)
 
 if __name__ == "__main__":
     app.run(debug=True)
